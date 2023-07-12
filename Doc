@@ -1,0 +1,237 @@
+Seminar 8: JavaScript si DOM
+JavaScript este un limbaj de scripting folosit pe Web si este folosit pentru a adauga functionalitate
+paginilor web, in general pe partea de client. JavaScript se insereaza in cadrul paginilor HTML si
+poate fi executat de catre toate browserele. Initial a fost implementat ca parte a browserelor web,
+astfel incat scripturile care rulau pe partea de client sa poata interactiona cu utilizatorul dupa ce
+documentul HTML a fost afisat in browser. JavaScript a devenit la ora actuala unul dintre cele mai
+populare limbaje, putand fi folosit pe toate tipurile de PC-uri, laptopuri, tablete, dispozitive mobile
+etc. Trebuie mentionat ca JavaScript este un limbaj de scripting, fiind mult mai usor decat un limbaj
+de programare. Acesta este diferit de limbajul de programare Java care este mult mai complex si
+este un omolog al limbajului de programare C. JavaScript si Java sunt doua limbaje complet diferite,
+atat in ceea ce priveste conceptul, designul, sintaxa cat si in ceea ce priveste scopul pentru care au
+fost create.
+Mai nou JavaScript a castigat in popularitate datorita aparitiei Ajax. Prin intermediul Ajax aplicatiile
+web pot trimite si prelula date de la server in mod asincron, in fundal, fara ca utilizatorul sa fie nevoit
+sa faca refresh la pagina HTML.
+Inserarea codului JavaScript in cadrul paginilor HTML
+Codul JavaScript prezent in documentele HTML trebuie inserat intre tag-urile <script> si </script>.
+Acestea poate fi pus atat in sectiunea de <head> cat si in cea de <body> si spun unde incepe si se
+termina codul JavaScript. Necesitatea apelarii aceluiasi cod pe mai multe pagini web a condus la
+aparitia fisierelor JavaScript externe. In acest caz codul este salvat in cadrul unui fisier cu extensia
+*.js, putand fi apelat din cadrul paginii web. Pentru a putea folosi un script extern se foloseste
+atributul "src" din cadrul tag-ului <script>.
+De cele mai multe ori dorim ca un cod sa se execute in momentul in care are loc un eveniment. De
+exemplu cand un utilizator da click pe un buton, sau trece cu cursorul mouse-ului peste un link.
+Pentru aceasta codul JavaScript se plaseaza in interiorul unei functii care va fi apelata in momentul in
+care are loc evenimentul.
+Problema 1. Exemplificati intr-un document HTML modul de apelare a unui script JavaScript. Scriptul
+va trebui sa afiseze un mesaj intr-o fereastra si sa fie apelat dintr-un fisier extern, din <head> si din
+<body>.
+Rezolvare
+<!DOCTYPE html>
+<html>
+<head>
+<script src="fisier.js"></script>
+<script>
+alert("Eu sunt din HEAD");
+</script>
+</head>
+<body>
+<script>
+alert("Eu sunt din BODY");
+</script>
+</body>
+</html>
+Fisierul fisier.js contine urmatorul cod JavaScript:
+alert("Eu sunt din fisierul .js");
+Observatie
+Fisierele ce contin scripturile JavaScript externe nu trebuie sa contina tagurile <script>.
+JavaScript HTML DOM
+Cu ajutorul HTML DOM, JavaScript poate accesa toate elementele unui document HTML. Browserul
+creaza un DOM in momentul in care pagina web este incarcata. Cu ajutorul unui model al obiectelor
+programabil, JavaScript are capacitatea de a crea HTML in mod dinamic. Prin urmare, JavaScript
+poate:
+- schimba toate elementele HTML din pagina;
+- schimba toate atributele HTML din pagina;
+- schimba toate stilurile CSS din pagina;
+- reactiona la toate evenimentele din pagina.
+Cu ajutorul JavaScript se pot manipula elementele HTML. Pentru a face acest lucru trebuie sa poata,
+in primul rand, sa gaseasca elementele. Acest lucru se poate realiza in mai multe feluri prin
+intermediul id-ului, tag-ului, sau numelui clasei.
+getElementById("Id") Metoda acceseaza primul element cu Id-ul specificat.
+Este ablolut necesar sa se furnizeze Id-ul elementului
+pe care dorim sa il accesam/manipulam.
+getElementsByTagName("TagName") Metoda acceseaza toate elementele cu tagul
+specificat. Este ablolut necesar sa se furnizeze numele
+tag-ului pe care dorim sa il accesam/manipulam.
+getElementsByClassName("ClassName") Metoda acceseaza toate elementele cu numele clasei
+specificat. Este ablolut necesar sa se furnizeze numele
+clasei pe care dorim sa o accesam/manipulam.
+Cel mai simplu mod de a modifica continutul unui element HTML este de proprietatea innerHTML.
+Pentru a schimba continutul unui element HTML, se utilizeaza urmatoarea sintaxa:
+document.getElementById("Id").innerHTML = continut nou
+Observatie importanta:
+Codul JavaScript este Case-sensitive. Acest lucru inseamna ca getElementById este diferit de
+getElementByID. Folosind varianta a doua codul JavaScript nu va functiona.
+Problema 2. Sa se construiasca un document HTML care sa contina un element <h1>, respectiv
+<div>. Ambele vor contine un text oarecare. Sa se scrie doua functii JavaScript care sa inlocuiasca
+textul afisat, cu data curenta, in momentul in care se da click pe elementul <h1> si se trece cu
+cursorul peste elementul <div>.
+Rezolvare
+<!DOCTYPE html>
+<html>
+<head>
+<script>
+function aratadata_in_h1()
+{
+document.getElementById("id_h1").innerHTML=Date();
+}
+function aratadata_in_div()
+{
+document.getElementById("id_div").innerHTML=Date();
+}
+</script>
+</head>
+<body>
+<h1 id="id_h1" onclick="aratadata_in_h1()">Sunt un H1. Da click pe mine ca sa
+vezi data.</h1>
+<div id="id_div" onmouseover="aratadata_in_div()">Sunt un div. Treci cu cursorul
+peste mine ca sa vezi data.</div>
+</body>
+</html>
+Explicarea exemplului
+Documentul HTML de mai sus contine un element <h1> cu id = "id_h1" si un element <div> cu id =
+"id_div".
+Folosim DOM HTML pentru a obtine elementul cu id = " id_h1", respectiv cu id = " id_div".
+Codul JavaScript schimba continutul (innerHTML) al elementelor. In cazul de fata rezultatulul
+returnat de catre functia Date() este atribuit elementelor <h1>, respectiv <div>.
+Problema 3. Sa se construiasca un document HTML care sa contina un link catre FSEGA ce se
+deschide in aceeasi fereastra/tab a browser-ului. Sa se scrie o functie JavaScript care sa inlocuiasca
+link-ul catre FSEGA cu un link catre UBB, textul afisat (pe care se da click), iar pagina sa se deschida
+intr-o noua fereastra/tab a browser-ului. Functia este apelata in momentul in care se da click pe un
+buton.
+Rezolvare
+<!DOCTYPE html>
+<html>
+<head>
+<script>
+function schimba_link()
+{
+document.getElementById('link').innerHTML="Eu merg la UBB intr-o fereastra noua";
+document.getElementById('link').href="http://www.ubbcluj.ro";
+document.getElementById('link').target="_blank";
+}
+</script>
+</head>
+<body>
+<a id="link" href="http://www.econ.ubbcluj.ro">Eu merg la FSEGA in aceeasi
+fereastra</a><p>
+<input type="button" onclick="schimba_link()" value="schimba link">
+</body>
+</html>
+Explicarea exemplului
+Documentul HTML de mai sus contine un element <a> cu id = "link".
+Folosim DOM HTML pentru a obtine elementul cu id = "link".
+Codul JavaScript schimba continutul (innerHTML) al elementului <a> si valoarea atributelor href,
+respectiv target, continute.
+Problema 4. Sa se construiasca un document HTML care sa contina mai multe cuvinte incadrate de
+elementul <span>. Folositi o functie JavaScript care sa afiseze continutul celui de-al 2-lea <span>.
+Rezolvare
+<!DOCTYPE html>
+<html>
+<body>
+In primul cos avem <span>piersici</span>.<p>
+In al 2-lea cos avem <span>capsuni</span>.<p>
+In al 3-lea cos avem <span>cirese</span>.<p>
+<script>
+function cauta_cos()
+{
+alert(document.getElementsByTagName("span")[1].innerHTML);
+}
+</script>
+<button onclick="cauta_cos()">Ce avem in al 2-lea cos?</button>
+</body>
+</html>
+Explicarea exemplului
+Documentul HTML de mai sus contine mai multe elemente de tip <span>.
+Folosim DOM HTML pentru a obtine continutul elementelor de tip <span>.
+Codul JavaScript afiseaza intr-o fereastra continutul (innerHTML) al celui de-al doilea element de tip
+<span>.
+Observatie
+getElementById() returneaza un array. Un array este o variabila speciala, care poate detine mai
+mult de o valoare la un moment dat.
+[0] este primul element dintr-un array
+[1] este al 2-lea element dintr-un array
+Problema 4. Sa se construiasca un document HTML care sa contina o imagine pe care in momentul
+in care se da dublu-click se deschide intr-o fereastra noua. Folositi doua functii JavaScript care sa
+permita derularea inainte si inapoi a pozelor si a link-urilor atasate acestora. Functiile vor fi atasate
+la butoane create cu elementul <input>, <button> si <a>.
+Rezolvare
+<!DOCTYPE html>
+<html>
+<head>
+<script>
+function next_picture()
+{
+document.getElementById('poza').src="eveniment2.jpg";
+document.getElementById('pozalink').href="eveniment2.jpg";
+}
+function prev_picture()
+{
+document.getElementById('poza').src="eveniment1.jpg";
+document.getElementById('pozalink').href="eveniment1.jpg";
+}
+</script>
+</head>
+<body>
+<a href="eveniment1.jpg" target="_blank" id="pozalink"><img src="eveniment1.jpg"
+id="poza"></a><p>
+<input type="button" onclick="prev_picture()" value="precedenta">
+<input type="button" onclick="next_picture()" value="urmatoarea">
+<a href="#" onclick="prev_picture()"> < </a>
+<a href="#" onclick="next_picture()"> > </a>
+<button onclick="prev_picture()">precedenta</button>
+<button onclick="next_picture()">urmatoarea</button>
+</body>
+</html>
+Observatie
+Diferenta dintre butoanele create cu elementul <input> si cele create cu elementul <button> este ca
+in interiorul unui element de tip <button> se poate pune continut, cum ar fi text sau imagini.
+HTML JavaScript DOM - CSS
+HTML DOM permite codului JavaScript sa schimbe stilul elementelor HTML. Pentru aceasta se
+foloseste urmatoarea sintaxa:
+document.getElementById("id").style.property = noul stil
+Problema 4. Sa se schimbe culoarea elementului <h1> cu id = "idh1" in portocaliu, atunci cand
+utilizatorul face click pe un buton.
+Rezolvare
+<!DOCTYPE html>
+<html>
+<body>
+<h1 id="idh1">Acest titlu isi va schimba culoarea </h1>
+<button onclick="document.getElementById('idh1').style.color='orange'">Schimba
+culoarea</button>
+</body>
+</html>
+Problema 4. Sa se adauge in documentul HTML un <div> care sa contina un text. Adaugati patru
+butoane care sa permita:
+- ascunderea textului
+- afisarea textului
+- ascunderea div-ului
+- afisarea div-ului
+Rezolvare
+<!DOCTYPE html>
+<html>
+<body>
+<div id="p1" style="background-color:yellow;">Acest text se afla in interiorul
+unui DIV.</div><p>
+<button onclick="document.getElementById('p1').style.visibility='hidden'">Ascunde
+text</button>
+<button
+onclick="document.getElementById('p1').style.visibility='visible'">Afiseaza
+text</button>
+<button onclick="document.getElementById('p1').style.display='none'">Ascunde
+DIV</button>
+<button onclick="document.getElementById('p1').style.display='block'">Afiseaza
+DIV</button>
+</body>
+</html>
