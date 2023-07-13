@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script>
+/*
+Scop: Familiarizarea cu principalele evenimente din paginile HTML
+- la incarcarea paginii ar trebui sa apara mesajul 'tocmai s-a incarcat pagina'
+- la parasirea paginii ar trebui sa apara mesajul 'tocmai s-a parasit pagina'
+- la trimiterea formularului ar trebui sa apara mesajul 'nu se mai trimite formularul', iar trimiterea sa se blocheze
+- la parasirea primului textbox ar trebui sa apara mesajul 'tocmai s-a parasit primul textbox'; cursorul e adus inapoi cu this.focus()
+- la apasarea oricarei taste in parola, apare mesajul 's-a apasat o tasta'
+- la intrarea in al 3lea textbox, apare 'se incearca intrarea pe al 3lea textbox'; apoi cursorul e inserat in textbox dar numai in IE (in FF cursorul e furat de aparitia alertei, vezi comentariile de mai jos)
+- la selectarea continutului din textarea, apare mesajul 's-a selectat comentariul'
+- la parasirea lui textarea, daca am modificat comentariul, apare mesajul 's-a schimbat comentariul'
+- la apasarea butonului DE SUB submit, apare mesajul 'tocmai s-a apasat butonul'
+- la dublu click pe cuvantul 'mere', apare mesajul 'tocmai s-a dat dublu click pe mere'
+- la click dreapta pe cuvantul 'pere', apare mesajul 'tocmai s-a dat click dreapta pe pere', iar meniul de context e dezactivat cu return false!
+- la intrarea cu mouseul pe suprafata imaginii, apare 's-a intrat cu mouseul peste imagine', la iesire apare 's-a iesit cu mouseul de pe imagine' (apasati OKul de pe alerta cu Enter, nu cu mouseul!)
+- la intrarea cu mouseul pe suprafata ultimului div, apare 'e apasat butonul mouseului'
+(apasati OKul de pe alerta cu Enter, nu cu mouseul, ca sa vedeti ca mousemove se activeaza si cand cursorul e miscat inauntrul DIVului, nu doar cand intram pe el!)
+- la apasarea unui click  pe DIV apare 'e apasat butonul mouseului' (apasati OKul de pe alerta cu Enter, nu cu mouseul!)
+- la ridicarea degetului de pe mouse, apare 'tocmai s-a luat degetul de pe mouse'
+
+Comentarii:
+Exista 2 particularitati importante in Firefox:
+- onblur se executa DUPA parasirea textboxului, in timp ce in IE se executa cand cursorul este inca in textbox si se incearca iesirea din el
+- onfocus se executa INAINTE de intrarea cursorului in textbox, in IE se executa dupa ce cursorul a ajuns in textbox
+- onselect se executa dupa ce s-a selectat orice din textbox, in IE se executa dupa ce s-a selectat 1 caracter
+In ambele cazuri e recomandat sa se evite ca efectul sa fie un mesaj de alerta (acesta muta focusului pe butonul ok al alertei!)
+
+Doua evenimente pot fi blocate punand un return false la sfarsitul efectului lor: trimiterea formularului si aparitia meniului contextual
+
+Aspecte de retinut:
+- onclick
+	= momentul imediat de dupa apasarea unui click (dupa ridicarea degetului de pe mouse) - se foloseste cu orice element (dar mai des cu butoane si linkuri)
+- ondlbclick
+	= momentul imediat de dupa un dubluclick
+- oncontextmenu
+	= momentul apasarii unui click dreapta
+	= functia apelata trebuie sa se finalizeze cu un return false pentru a impiedica aparitia meniului de context
+- onmousedown
+	= momentul apasarii unui click (inainte de ridicarea degetului de pe mouse)
+- onmouseup
+	= momentul ridicarii degetului de pe mouse dupa un click
+	= deci e similar cu onclick, dar se foloseste impreuna cu onmousedown pentru a face lucruri diferite la apasare si la ridicarea degetului
+- onkeypress
+	= apasarea unei taste - se foloseste de obicei pe elemente in care se poate tasta (textbox, textarea, password)
+	= uneori contine o procedura mai complexa care sa detecteze si ce tasta s-a apasat (procedura ce trebuie sa tina cont de diferentele FF-IE)
+- onmousemove
+	= miscarea mouseului - se foloseste pe orice elemente, pentru a detecta momentul in care se misca mouseul
+	= de obicei folosita in jocuri pentru a face lucrurile sa reactioneze la miscarea mouseului
+- onmouseover
+	= intrarea mouseului pe suprafata unui element - se foloseste la orice elemente
+- onmouseout
+	= iesirea mouseului de pe suprafata unui element
+	= se foloseste impreuna cu mouseover pentru efectul rollover!
+- onsubmit
+	= momentul apasarii butonului submit
+	= se foloseste pe formular, nu pe butonul submit!
+	= ca si la oncontextmenu, functia apelata trebuie urmata de un return false pentru a impiedica trimiterea datelor (se foloseste la validare, pentru a nu trimite formularul pana nu s-au introdus date corecte)
+- onblur
+	= momentul de dupa parasirea unui camp de formular (in FF), sau de dinaintea parasirii (in IE);
+	= diferenta afecteaza modul in care cursorul poate fi adus inapoi in camp (de ex. pentru a nu permite parasirea lui pana cand datele tastate nu sunt valide)
+	= e recomandat sa se evite ca onblur sa afiseze un mesaj de alerta, caci acesta "fura cursorul"; de obicei mesajele de validare se semnaleaza direct in pagina (ex. colorarea cu rosu a textboxului, aparitia unui avertisment alaturi)
+- onfocus
+	= momentul de dinaintea intrarii pe un camp de formular (in FF), sau de dupa intrarea pe un camp de formular (in IE)
+	= idem, e recomandat sa se evite ca onfocus sa afiseze un mesaj de alerta, caci acesta "fura cursorul"
+- onchange
+	= similar cu onblur, dar se activeaza doar daca in timpul cat cursorul a stat in camp, i s-a modificat valoarea
+- onselect
+	= momentul de dupa selectarea continutului unui camp de formular
+- onload
+	= momentul afisarii unei pagini
+	= se foloseste de obicei pe BODY sau pe IFRAME, pentru a initializa diverse variabile JavaScript (de obicei pt a selecta elementele din pagina ce urmeaza sa fie manipulate)
+- onunload
+	= momentul parasirii unei pagini
+	= idem, pe BODY sau pe IFRAME
+	
+*/
+</script>
+</head>
+
+<body onload="alert('tocmai s-a incarcat pagina')" onunload="alert('tocmai s-a parasit pagina')">
+
+<form action="destinatie.php" onsubmit="alert('nu se mai trimite formularul'); return false">
+	Nume: <input type="text" onblur="alert('tocmai s-a parasit primul textbox'); this.focus()"/><br/>
+	Parola: <input type="password" placeholder="apasa o tasta" onkeypress="alert('s-a apasat o tasta')"/><br/>
+	Alte informatii: <input type="text" placeholder="pune focusul pe element" onfocus="alert('se incearca intrarea pe al 3-lea textbox')"/><br/>
+	<textarea onchange="alert('s-a schimbat comentariul')" onselect="alert('s-a selectat comentariul')">Introduceti un comentariu</textarea><br/>
+	<input type="submit"/>
+</form>
+
+<input type="button" value="Acest buton va afisa un mesaj" onclick="alert('tocmai s-a apasat butonul')"><br/>
+
+Dati un dublu click pe cuvantul <span ondblclick="alert('tocmai s-a dat dublu click pe mere')">mere</span><br/>
+
+Dati un click dreapta pe cuvantul <span oncontextmenu="alert('tocmai s-a dat click dreapta pe pere'); return false">pere</span><br/>
+
+<img src="imagine.png" style="width:300px;margin:auto;display:block" onmouseover="alert('s-a intrat cu mouseul peste imagine')" onmouseout="alert('s-a iesit cu mouseul de pe imagine')"/>
+
+<div style="width:100px; height:100px;border:2px solid red" onmousedown="alert('e apasat butonul mouseului')" onmouseup="alert('tocmai s-a luat degetul de pe mouse')">Click aici pt a testa mousedown si mouseup</div>
+</body>
+</html>
+
+
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+<script>
+/*
+Scop:Manipularea dinamica a continutului paginii, exemplificata prin:
+- inserarea unui formular (pe baza de LOCATIE REZERVATA, adica un div gol)
+- inserarea in formular a unui camp nou (pe baza de POZITIE, inaintea butonului submit)
+- stergerea unui formular
+- modificarea continutului unui tabel
+
+Comentariu:
+- pentru inserarea formularului, am rezervat de la bun inceput un DIV gol, cu ID, al carui continut e manipulat cu innerHTML
+(o alta metoda frecvent utilizata e crearea formularului in mod invizibil de la inceput, si aparitia/disparitia sa prin manipularea vizibilitatii din CSS)
+- pentru inserarea unui textarea la finalul formularului, nu am mai avut locatie rezervata, si nici formularul nu are un ID, asa ca am procedat la a merge
+din aproape in aproape
+	1. selectia formularului pe baza pozitiei in document,
+	2. selectia butonului submit pe baza pozitiei in formular,
+	3. apoi inserarea noului continut INAINTEA butonului submit;
+De asemenea, noul continut nu mai e creat ca un simplu string ce se atribuie lui innerHTML, ci cu createElement (creeaza o instructiune HTML noua, pe care nu stim inca unde dorim sa o inseram).
+
+
+Aspecte importante de retinut:
+- functia getElementById (atentie la majuscule!!!) pentru a accesa elemente pe baza de ID
+- cand avem o zona rezervata pentru inserare de continut, continutul se creeaza ca un string simplu, iar inserarea se face cu innerHTML pe zona rezervata
+- cand nu avem o zona rezervata, continutul se creeaza cu createElement, iar inserarea se face cu insertBefore (daca am reusit sa ne pozitionam pe elementul in fata caruia adaugam continutul);
+	se poate face si cu appendChild care face inserare la sfarsitul continutului existent al unei instructiuni (de ex. la sfarsit de formular)
+- importanta ID-urilor unice, care fac posibila utilizarea lui getElementById
+- daca nu avem ID-uri, putem incerca sa cautam elementele pe baza de pozitie: document.forms, formular.elements, etc. sunt diversi vectori de elemente (mai sunt si altii pentru linkuri, imagini etc.)
+*/
+function initializare()
+{
+locatie=document.getElementById("tinta")
+}
+//aceasta functie se ocupa de selectarea DIVului in care va avea loc inserarea;
+//spre deosebire de alte limbaje de programare, variabilele create de o functie JavaScript nu sunt implicit locale, pot fi accesate si de alte functii!
+//din acest motiv adesea se creeaza o astfel de functie de initializare in care se selecteaza elementele ce vor fi manipulate cu JavaScript (folosind getElementById daca au ID)
+function insereaza1()
+{
+continut="<form action='destinatie.php'>User:<input type='text' name='x'/><br/>Parola:<input type='password' name='y'/><br/><input type='submit'/></form>"
+locatie.innerHTML=continut
+}
+//aceasta functie se ocupa de generarea codului HTML pentru formular si inserarea sa in DIVul gol, cu ajutorul proprietatii innerHTML
+function insereaza4()
+{
+campnou=document.createElement("textarea")
+//am creat o instructiune textarea in memorie, fara sa o lipim (deocamdata) la document
+campnou.setAttribute("name","comentariu")
+// i-am definit un atribut name="comentariu"
+formular=document.forms[0]
+//accesam primul formular din document
+nr=formular.elements.length
+//aflam cate elemente are
+butonsubmit=formular.elements[nr-1]
+//accesam ultimul element din formular (stiind ca e butonul submit)
+campnou=formular.insertBefore(campnou,butonsubmit)
+//inseram instructiunea textarea anterior generata; functia de inserare returneaza ceea ce s-a inserat pentru a-i aduce modificari suplimentare
+campnou.innerHTML="Introduceti un comentariu"
+//ii adaugam si un continut instructiunii textarea
+}
+//aceasta functie se ocupa de inserarea unui textarea fara a avea o zona rezervata pentru inserare
+//inserarea e facuta pe baza de pozitie	
+
+function sterge()
+{
+locatie.innerHTML=""
+}
+//aceasta functie se ocupa de stergerea continutului DIVului gol, atribuind un string vid lui innerHTML
+</script>
+</head>
+
+<body onload="initializare()">
+	<input type="button" value="insereaza formular" onclick="insereaza1()"/><br/>
+	<input type="button" value="adauga la formular un textarea" onclick="insereaza4()"/><br/>
+	<input type="button" value="sterge formular" onclick="sterge()"/><p/>
+	<div id="tinta">aici va fi inserat formularul</div>
+</body>
+</html>
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+<script>
+/*
+Scop: Manipularea de atribute HTML, exemplificate pe:
+- modificarea alinierii unui paragraf,
+- modificarea tipului si valorii unui camp de formular
+- modificarea destinatiei unui link
+- modificarea unei imagini la trecerea cu mouseul peste ea (efectul rollover)
+Comentariu:
+- sintaxa standard pentru a manipula atribute in arborele DOM este Obiect.getAttribute('atribut') si Obiect.setAttribute('atribut','valoare noua')
+- totusi, cand lucram pe arborele DOM din HTML (exista si in alte limbaje arbori DOM!), ni se ofera sintaxa prescurtata pe care am folosit-o in aceste exemple: Obiect.atribut
+- in general ambele sintaxe functioneaza pentru majoritatea atributelor (dar nu chiar pt toate)
+
+Aspecte important de retinut:
+- atunci cand evenimentul si atributul modificat apartin aceluiasi element din pagina, nu mai trebuie sa il selectam cu getElementById, ci folosim cuvantul this ca argument al functiei (cazul imaginii roll over)
+- majoritatea atributelor HTML pot fi manipulate prin constructii de genul Obiect.AtributHTML
+(alte exemple: x.src daca x e o imagine sau un iframe; x.id daca x e o instructiune ce a primit ID; x.href daca x e un link etc.)
+- totusi:
+a. nu TOATE atributele HTML pot fi astfel manipulate (de exemplu CLASS),
+b. unele browsere considera unele atribute readonly (de exemplu TYPE in IE poate fi testat dar nu si modificat)
+c. uneori sintaxa standard (cu setAttribute/getAttribute) nu da aceleasi rezultate ca si sintaxa optimizata Obiect.atribut
+(exemplu: imagine.src ne da numele fisierului din SRC, in timp ce imagine.getAttribute('src') ne da calea absoluta a fisierului!)
+
+Evenimente exemplificate:
+- onclick (si alte evenimente) poate fi asociat oricarui element, nu doar butoanelor!
+- ondblclick = dublu clic
+- onmouseover = trecerea cu mouseul peste suprafata unui element
+- onmouseout = parasirea cu mouseul a suprafetei elementului
+
+*/
+function initializare()
+{
+parag=document.getElementById("p1")
+txt=document.getElementById("i1")
+legatura=document.getElementById("leg1")
+
+parag.style.border="1px solid red"
+}
+//aceasta e functia de initializare, care selecteaza paragraful de manipulat
+function dr()
+{
+parag.style.textAlign="right"
+}
+function st()
+{
+parag.style.textAlign="left"
+}
+function centru()
+{
+parag.style.textAlign="center"
+}
+//acestea sunt functiile de manipulare a atributului ALIGN (ca alternativa, puteam folosi locatie.setAttribute("align","right"))
+function converteste()
+{
+if (txt.type=="text")
+	txt.type="checkbox"
+else
+	txt.type="text"
+}
+//aceasta e functia care schimba tipul unui camp de formular (intre textbox si checkbox); nu functioneaza in IE care considera atributul TYPE ca fiind readonly!
+function valoare()
+{
+if (txt.type=="text")
+	txt.value="AAAAAAA"
+else
+	txt.checked="checked"
+}
+//aceasta e functia care atribuie valore campului din formular - un text, daca e textbox, sau bifare, daca e checkbox
+function destinatielink()
+{
+legatura.href="http://www.yahoo.com"
+legatura.innerHTML="Acum linkul merge la yahoo!"
+}
+//aceasta e functia care modifica destinatia linkului
+function p1(imagine)
+{
+imagine.src="poza2.jpg"
+}
+function p2(imagine)
+{
+imagine.src="poza1.jpg"
+}
+//acestea sunt functiile care asigura mecanismul rollover; observati cum am folosit cuvantul this pentru a selecta imaginea, ceea ce ne scuteste de getElementById in functia de initializare
+</script>
+</head>
+
+<body onload="initializare()">
+	<input type="button" value="aliniaza dreapta" onclick="dr()"/><br/>
+	<input type="button" value="aliniaza centru" onclick="centru()"/><br/>
+	<input type="button" value="aliniaza stanga" onclick="st()"/><br/>
+	<p id="p1">Acesta e un paragraf</p>
+	
+	<input type="button" value="converteste input" ondblclick="converteste()"/><br/>
+	<input type="button" value="seteaza valoare" ondblclick="valoare()"/><br/>
+	<input id="i1" type="text"/><br/>
+	
+	<p onclick="destinatielink()">Click aici pt a modifica destinatia linkului de mai jos</p>
+	<a id="leg1" href="http://www.google.com">Click aici pt a sari la google</a><p/>
+	
+	<img src="imagine.png" height="100" onmouseover="p1(this)" onmouseout="p2(this)"/>
+</body>
+</html>
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+.stil1{
+color:red;
+background:blue
+}
+.stil2{
+color:green;
+border:2px solid red
+}
+</style>
+<script>
+/*
+Scop: Manipularea stilurilor CSS din JavaScript, in functie de evenimente.
+Comentariu:
+- adesea se pregatesc de la inceput mai multe stiluri pt acelasi element, astfel incat prin manipularea atributului CLASS sa aiba loc trecerea dintr-un stil in altul
+- ca alternativa la manipularea atributului CLASS se practica si manipularea atributului STYLE, care ne permite sa modificam stiluri la nivel de proprietate
+- aparitia si disparitia de elemente in pagina poate fi controlata si prin vizibilitatea CSS, nu doar prin inserare/stergere cu innerHTML
+
+Aspecte importante de retinut:
+- atributul CLASS nu se poate modifica cu sintaxa populara Obiect.class, ci cu Obiect.className
+- atributul STYLE poate fi accesat prin:
+	- modificarea integrala a stilului, cu Obiect.style.cssText
+	- modificarea fiecarei proprietati in particular, cu Obiect.style.proprietate
+- toate proprietatile care au in CSS cratima, se traduc in JavaScript dupa urmatorul model: font-size devine fontSize, font-weight devine fontWeight etc.
+- unele proprietati care intra in conflict de nume cu instructiuni JavaScript isi schimba numele: float din CSS devine cssFloat (pentru a nu se confunda cu cuvantul cheie float din JS)
+- elementele isi pot schimba modul de afisare intre none (invizibil), block (tip DIV, ocupand toata latimea ecranului), inline (tip SPAN)
+	
+Evenimente:
+- oncontextmenu este evenimentul click dreapta; functia acestuia trebuie insotita de return false, pentru a impiedica aparitia meniului contextual!
+	
+*/
+function s2(parag)
+{
+parag.className="stil2"
+}
+function s1(parag)
+{
+parag.className="stil1"
+}
+//aceste functii manipuleaza atributul CLASS
+function s3(parag)
+{
+parag.style.cssText="color:yellow;position:relative;left:300px;top:300px"
+}
+//aceasta functie manipuleaza atributul STYLE
+function s4(parag)
+{
+parag.style.color=""
+parag.style.position=""
+}
+//aceasta functie manipuleaza STYLE la nivel de proprietate (eliminand stilul)
+function comutaviz(a)
+{
+dv=document.getElementById("inv")
+if (dv.style.display=="none")
+	dv.style.display="block"
+else
+	dv.style.display="none"
+	
+if (a.value=="arata <P>")
+	a.value="ascunde <P>"
+else
+	a.value="arata <P>"	
+}
+//aceasta functie comuta vizibilitatea unui element
+function comutamod(d)
+{
+if (d.style.display=="block")
+	d.style.display="inline"
+else
+	d.style.display="block"
+}
+//aceasta functie comuta modul de afisare a unui DIV (ca SPAN sau ca DIV)
+function comutafont(sp)
+{
+	sp.style.fontSize="48px"
+}
+//aceasta functie mareste fontul
+function p1(imagine)
+{
+imagine.style.opacity="0.4"
+}
+function p2(imagine)
+{
+imagine.style.opacity="1"
+}
+
+function comutaviz1(a)
+{
+dv=document.getElementById("inv")
+if (dv.style.display=="none")
+	dv.style.display="block"
+else
+	dv.style.display="none"
+	
+if (a.innerHTML=="arata mai mult")
+	a.innerHTML="arata mai putin"
+else
+	a.innerHTML="arata mai mult"	
+}
+</script>
+</head>
+
+<body>
+	<p class="stil1" onmouseover="s2(this)" onmouseout="s1(this)" onclick="s3(this)" oncontextmenu="s4(this)">Acesta e un paragraf</p>
+
+	<input type="button" value="arata <P>" onclick="comutaviz(this)"/>
+	<button onclick="comutaviz1(this)">arata mai mult</button>
+	
+	<div id="inv" style="display:none;color:red" onclick="comutamod(this)">Acesta DIV a devenit vizibil. Click pe el pt a-i trece din afisare tip DIV in SPAN si invers</div>
+	
+	<span onclick="comutafont(this)">Acesta e un text care isi va schimba marimea fontului</span><p/>
+	
+	<img src="poza1.jpg" style="opacity:1" height="200" onmouseover="p1(this)" onmouseout="p2(this)"/>
+</body>
+</html>
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+<script>
+/*
+Scop: familiarizarea cu metodele de declansare automata a evenimentelor.
+
+De retinut:
+
+Metode declansare:
+- obiect.click()
+- obiect.select()
+- obiect.focus()
+- obiect.submit() - daca obiectul e un formular
+
+Noi metode de selectie (pe langa getElementById):
+- getElementsByTagName
+- getElementsByName
+Diferenta esentiala fata de getElementById: ambele returneaza vectori! (ce trebuie parcursi cu cicluri for) in timp ce IDurile, fiind unice, returneaza obiecte unice.
+*/
+
+function initializare()
+{
+campuri=document.getElementsByTagName("input")
+radio=document.getElementsByName("v")
+formular=document.getElementById("f")
+i=0
+j=0
+k=0
+}
+
+function sari()
+{
+campuri[i].focus()
+i++
+if (i==campuri.length)
+	i=0
+}
+
+function bifeaza()
+{
+radio[j].click()
+j++
+if (j==radio.length)
+	j=0
+}
+
+function selecteaza()
+{
+campuri[k].select()
+k++
+if (k==campuri.length)
+	k=0
+}
+
+function trimite()
+{
+formular.submit()
+}
+</script>
+</head>
+<body onload="initializare()">
+
+<form id="f" action="destinatie.php">
+Nume:<input type="text" name="i1"/><br/>
+Prenume:<input type="text" name="i2"/><br/>
+Adresa:<input type="text" name="i3"/><br/>
+Interval varsta:<br/>
+sub 18 -<input type="radio" name="v"/><br/>
+18-60 -<input type="radio" name="v"/><br/>
+peste 60 -<input type="radio" name="v"/><br/>
+</form>
+
+<span style="border:2px solid red" onclick="sari()"> Click aici pt a sari dintr-un camp in altul </span><br/>
+<span style="border:2px solid blue" onclick="trimite()"> Click aici pt a trimite formularul </span><br/>
+<span style="border:2px solid green" onclick="bifeaza()"> Click aici pt a bifa pe rand butoanele radio </span><br/>
+<span style="border:2px solid green" onclick="selecteaza()"> Click aici pt a selecta pe rand campurile </span><br/>
+</body>
+</html>
+
+
+
